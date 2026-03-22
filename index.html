@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -276,8 +276,18 @@
 <script>
   const toggle = document.getElementById('toggle');
   const html = document.documentElement;
-  const saved = localStorage.getItem('iai-theme');
-  if (saved) html.dataset.theme = saved;
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyTheme() {
+    const saved = localStorage.getItem('iai-theme');
+    html.dataset.theme = saved || (systemDark.matches ? 'dark' : 'light');
+  }
+
+  applyTheme();
+  systemDark.addEventListener('change', () => {
+    if (!localStorage.getItem('iai-theme')) applyTheme();
+  });
+
   toggle.addEventListener('click', () => {
     const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
     html.dataset.theme = next;
